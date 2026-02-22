@@ -14,7 +14,7 @@ add_library(math_lib
 
 target_include_directories(math_lib PUBLIC include)
 
-add_executable(math_biblio main.cpp
+add_executable(ml-proj main.cpp
         include/matrix.hpp)
 
-target_link_libraries(math_biblio PRIVATE math_lib)
+target_link_libraries(ml-proj PRIVATE math_lib)

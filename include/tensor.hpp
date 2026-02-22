@@ -14,7 +14,15 @@ public:
 
     double& operator()(const std::vector<size_t>& indices);
 
+    double operator()(const std::vector<size_t>& indices) const;
+
     void reshape(std::vector<size_t> nshape);
 
+    Tensor& operator+=(const Tensor& other);
 
+    Tensor operator+(const Tensor& other) const;
+
+    Tensor matmul(const Tensor& other) const;
+
+    void print() const;
 };
