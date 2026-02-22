@@ -95,3 +95,18 @@ void Tensor::print() const {
         std::cout << std::endl;
     }
 }
+
+Tensor& Tensor::apply_(std::function<double(double)> func) {
+    for (double& val : data) {
+        val = func(val);
+    }
+    return *this;
+}
+
+Tensor Tensor::apply(std::function<double(double)> func) const {
+    Tensor result = *this;
+    for (double& val : result.data) {
+        val = func(val);
+    }
+    return result;
+}

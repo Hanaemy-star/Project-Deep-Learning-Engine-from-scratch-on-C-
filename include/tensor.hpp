@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <functional>
 
 class Tensor {
 private:
@@ -25,4 +26,8 @@ public:
     Tensor matmul(const Tensor& other) const;
 
     void print() const;
+
+    Tensor& apply_(std::function<double(double)> func);
+
+    Tensor apply(std::function<double(double)> func) const;
 };
