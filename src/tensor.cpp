@@ -83,6 +83,7 @@ Tensor Tensor::operator+(const Tensor& other) const {
                 }
             }
         };
+        result.prev = {left_grad, right_grad};
     }
     return result;
 }
