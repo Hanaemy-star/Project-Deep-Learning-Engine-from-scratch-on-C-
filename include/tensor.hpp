@@ -6,7 +6,7 @@
 #include <memory>
 #include <unordered_set>
 
-class Tensor {
+class Tensor : public std::enable_shared_from_this<Tensor> {
 private:
     std::vector<double> data;
     std::vector<size_t> shape;
@@ -15,6 +15,7 @@ private:
     bool requires_grad;
 
     size_t calculate_size(const std::vector<size_t>& s);
+    void zero_grad();
 
 public:
 

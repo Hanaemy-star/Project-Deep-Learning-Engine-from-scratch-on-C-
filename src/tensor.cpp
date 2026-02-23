@@ -48,6 +48,10 @@ void Tensor::fill(double value) {
     std::fill(data.begin(), data.end(), value);
 }
 
+void Tensor::zero_grad() {
+    grad->fill(0.0);
+}
+
 Tensor& Tensor::operator+=(const Tensor& other) {
     if (shape != other.shape) {
         throw std::invalid_argument("Shapes must match for in-place addition");
