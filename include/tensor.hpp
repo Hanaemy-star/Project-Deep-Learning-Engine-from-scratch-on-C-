@@ -4,6 +4,7 @@
 #include <vector>
 #include <functional>
 #include <memory>
+#include <unordered_set>
 
 class Tensor {
 private:
@@ -12,8 +13,6 @@ private:
     std::shared_ptr<Tensor> grad;
     std::vector<std::shared_ptr<Tensor>> prev;
     bool requires_grad;
-
-
 
     size_t calculate_size(const std::vector<size_t>& s);
 
@@ -48,6 +47,10 @@ public:
     Tensor relu() const;
 
     Tensor operator*(const double& scalar) const;
+
+    void build_topo(std::shared_ptr<Tensor> curr,
+                    std::vector<std::shared_ptr<Tensor>>& topo,
+                    std::unordered_set<Tensor*>& visited);
 
     void backward();
 };

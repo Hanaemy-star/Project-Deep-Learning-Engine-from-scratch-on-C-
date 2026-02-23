@@ -153,3 +153,19 @@ Tensor Tensor::operator*(const double& scalar) const {
 std::shared_ptr<Tensor> Tensor::get_grad() const {
     return this->grad;
 }
+
+void Tensor::build_topo(std::shared_ptr<Tensor> curr,
+                    std::vector<std::shared_ptr<Tensor>>& topo,
+                    std::unordered_set<Tensor*>& visited) {
+
+    if (visited.find(curr.get()) != visited.end()) {
+        return;
+    }
+
+    visited.insert(curr.get());
+
+    for (auto& parent : curr->prev) {
+        build_topo(parent, topo, visited);
+    }
+    topo.push_back(curr);
+}
