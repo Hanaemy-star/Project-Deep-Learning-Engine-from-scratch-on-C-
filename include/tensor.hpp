@@ -28,6 +28,8 @@ public:
 
     void reshape(std::vector<size_t> nshape);
 
+    void fill(double value);
+
     std::shared_ptr<Tensor> get_grad() const;
 
     std::vector<double>& get_data();

@@ -44,6 +44,10 @@ void Tensor::reshape(std::vector<size_t> nshape) {
     shape = nshape;
 }
 
+void Tensor::fill(double value) {
+    std::fill(data.begin(), data.end(), value);
+}
+
 Tensor& Tensor::operator+=(const Tensor& other) {
     if (shape != other.shape) {
         throw std::invalid_argument("Shapes must match for in-place addition");
