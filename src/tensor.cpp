@@ -54,12 +54,36 @@ Tensor& Tensor::operator+=(const Tensor& other) {
     return *this;
 }
 
+std::vector<double>& Tensor::get_data() {
+    return this->data;
+}
+
 Tensor Tensor::operator+(const Tensor& other) const {
     if (shape != other.shape) {
         throw std::invalid_argument("Shapes must match for in-place addition");
     }
-    Tensor result = *this;
-    result += other;
+    Tensor result(shape, 0.0, (this->requires_grad || other.requires_grad));
+    for (size_t i = 0; i < data.size(); i++) {
+        result.data[i] = this->data[i] + other.data[i];
+    }
+    if (result.requires_grad) {
+        auto left_grad = this->get_grad();
+        auto right_grad = other.get_grad();
+        auto res_grad = result.get_grad();
+
+        result._backward = [left_grad, right_grad, res_grad]() {
+            if (left_grad) {
+                for (size_t i = 0; i < left_grad->data.size(); i++) {
+                    left_grad->data[i] += res_grad->data[i];
+                }
+            }
+            if (right_grad) {
+                for (size_t i = 0; i < right_grad->data.size(); i++) {
+                    right_grad->data[i] += res_grad->data[i];
+                }
+            }
+        };
+    }
     return result;
 }
 

@@ -13,11 +13,14 @@ private:
     std::vector<std::shared_ptr<Tensor>> prev;
     bool requires_grad;
 
-    std::function<void()> _backward;
+
 
     size_t calculate_size(const std::vector<size_t>& s);
 
 public:
+
+    std::function<void()> _backward;
+
     Tensor(std::vector<size_t> shape, double initial_value = 0.0, bool requires_grad = false);
 
     double& operator()(const std::vector<size_t>& indices);
@@ -27,6 +30,8 @@ public:
     void reshape(std::vector<size_t> nshape);
 
     std::shared_ptr<Tensor> get_grad() const;
+
+    std::vector<double>& get_data();
 
     Tensor& operator+=(const Tensor& other);
 
