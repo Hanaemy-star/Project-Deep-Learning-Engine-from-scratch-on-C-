@@ -120,6 +120,25 @@ std::shared_ptr<Tensor> Tensor::matrixmul(std::shared_ptr<Tensor> a, std::shared
     return result;
 }
 
+std::shared_ptr<Tensor> Tensor::relu(std::shared_ptr<Tensor> a) {
+    auto result = a->relu();
+
+    if (a->requires_grad) {
+        result->requires_grad = true;
+        result->grad = std::make_shared<Tensor>(result->shape, 0.0, false);
+
+        result->prev = {a};
+
+        result->_backward = [a, result]() {
+            for (size_t i = 0; i < a->data.size(); ++i) {
+                double local_grad = (a->data[i] > 0.0) ? 1.0 : 0.0;
+                a->grad->data[i] += result->grad->data[i] * local_grad;
+            }
+        };
+    }
+    return result;
+}
+
 std::shared_ptr<Tensor> Tensor::transpose() const {
     if (this->shape.size() != 2) throw std::invalid_argument("Size must be 2");
 
@@ -181,17 +200,18 @@ Tensor& Tensor::apply_(std::function<double(double)> func) {
     return *this;
 }
 
-Tensor Tensor::apply(std::function<double(double)> func) const {
-    Tensor result = *this;
-    for (double& val : result.data) {
+std::shared_ptr<Tensor> Tensor::apply(std::function<double(double)> func) const {
+    auto result = std::make_shared<Tensor>(*this);
+    for (double& val : result->data) {
         val = func(val);
     }
     return result;
 }
 
-Tensor Tensor::relu() const {
-    Tensor result = *this;
-    return result.apply_([](double val) {return val > 0.0 ? val : 0.0;});
+std::shared_ptr<Tensor> Tensor::relu() const {
+    auto result = std::make_shared<Tensor>(*this);
+    result->apply_([](double val) {return val > 0.0 ? val : 0.0;});
+    return result;
 }
 
 Tensor Tensor::operator*(const double& scalar) const {

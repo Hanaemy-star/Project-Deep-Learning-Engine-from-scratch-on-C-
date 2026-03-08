@@ -25,6 +25,8 @@ public:
 
     static std::shared_ptr<Tensor> matrixmul(std::shared_ptr<Tensor> a, std::shared_ptr<Tensor> b);
 
+    static std::shared_ptr<Tensor>relu(std::shared_ptr<Tensor> a);
+
     Tensor(std::vector<size_t> shape, double initial_value = 0.0, bool requires_grad = false);
 
     double& operator()(const std::vector<size_t>& indices);
@@ -49,11 +51,13 @@ public:
 
     Tensor& apply_(std::function<double(double)> func);
 
-    Tensor apply(std::function<double(double)> func) const;
+    std::shared_ptr<Tensor> apply(std::function<double(double)> func) const;
 
-    Tensor relu() const;
+    std::shared_ptr<Tensor> relu() const;
 
     Tensor operator*(const double& scalar) const;
+
+
 
     void build_topo(std::shared_ptr<Tensor> curr,
                     std::vector<std::shared_ptr<Tensor>>& topo,
