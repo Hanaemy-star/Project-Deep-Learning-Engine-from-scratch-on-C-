@@ -260,3 +260,27 @@ void Tensor::backward() {
         }
     }
 }
+
+std::shared_ptr<Tensor> Tensor::mse_loss(std::shared_ptr<Tensor> pred, std::shared_ptr<Tensor> target) {
+    size_t size = pred->data.size();
+    double sum_diff = 0.0;
+    for (size_t i = 0; i < size; i++) {
+        double diff = pred->data[i] - target->data[i];
+        sum_diff = diff * diff;
+    }
+    double mse = sum_diff / size;
+
+    std::shared_ptr<Tensor> result = std::make_shared<Tensor>(std::vector<size_t>{1}, mse, pred->requires_grad);
+
+    result->prev = {pred};
+    if (pred->requires_grad) {
+        result->_backward = [pred, target, result, size]() {
+            double upstream_grad = result->grad->data[0];
+
+            for (size_t i = 0; i < size; i++) {
+                pred->grad->data[i] += (2.0 / size) * (pred->data[i] - target->data[i]) * upstream_grad;
+            }
+        };
+    }
+    return result;
+}

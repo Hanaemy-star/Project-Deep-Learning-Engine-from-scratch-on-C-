@@ -27,6 +27,8 @@ public:
 
     static std::shared_ptr<Tensor>relu(std::shared_ptr<Tensor> a);
 
+    static std::shared_ptr<Tensor> mse_loss(std::shared_ptr<Tensor> pred, std::shared_ptr<Tensor> target);
+
     Tensor(std::vector<size_t> shape, double initial_value = 0.0, bool requires_grad = false);
 
     double& operator()(const std::vector<size_t>& indices);
