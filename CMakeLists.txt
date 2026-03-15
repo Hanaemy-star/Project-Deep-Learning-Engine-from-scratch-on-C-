@@ -12,6 +12,8 @@ add_library(math_lib
         src/tensor.cpp
         include/Optimizer.hpp
         src/optimizer.cpp
+        include/linear.hpp
+        src/linear.cpp
 )
 
 target_include_directories(math_lib PUBLIC include)
