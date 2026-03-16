@@ -11,14 +11,14 @@ A high-performance Machine Learning library built from scratch in C++. This proj
 ## 🛠 Tech Stack
 - **Language:** C++17/20
 - **Math:** Linear Algebra, Calculus
-- **Tools:** Git, CMake (planned)
+- **Tools:** Git, CMake
 
 ## 📈 Roadmap
 - [x] Basic Matrix/Vector operations
-- [ ] Generalized N-dimensional Tensors
+- [x] Generalized N-dimensional Tensors
 - [x] Automatic Differentiation (Autograd)
-- [ ] Neural Network Layers (Dense, ReLU, Softmax)
-- [ ] Optimization algorithms (SGD, Adam)
+- [x] Neural Network Layers (Dense, ReLU, Softmax)
+- [x] Optimization algorithms (SGD, Adam)
 
 ## 🧪 Current Status
-Developing the core Tensor infrastructure and Stride-based indexing logic.
+fix bugs
