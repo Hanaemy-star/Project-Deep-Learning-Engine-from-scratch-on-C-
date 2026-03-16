@@ -7,7 +7,8 @@ Linear::Linear(size_t in_features, size_t out_features) {
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::normal_distribution<double> dis(0.0, 0.1);
+    double std_dev = std::sqrt(2.0 / (in_features + out_features));
+    std::normal_distribution<double> dis(0.0, std_dev);
 
     for (auto& v : W->get_data()) {
         double val = dis(gen);

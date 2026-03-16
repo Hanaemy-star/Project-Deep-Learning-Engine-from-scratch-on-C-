@@ -14,6 +14,8 @@ add_library(math_lib
         src/optimizer.cpp
         include/linear.hpp
         src/linear.cpp
+        include/mlp.hpp
+        src/mlp.cpp
 )
 
 target_include_directories(math_lib PUBLIC include)

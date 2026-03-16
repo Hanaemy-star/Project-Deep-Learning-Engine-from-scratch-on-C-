@@ -120,25 +120,6 @@ std::shared_ptr<Tensor> Tensor::matrixmul(std::shared_ptr<Tensor> a, std::shared
     return result;
 }
 
-std::shared_ptr<Tensor> Tensor::relu(std::shared_ptr<Tensor> a) {
-    auto result = a->relu();
-
-    if (a->requires_grad) {
-        result->requires_grad = true;
-        result->grad = std::make_shared<Tensor>(result->shape, 0.0, false);
-
-        result->prev = {a};
-
-        result->_backward = [a, result]() {
-            for (size_t i = 0; i < a->data.size(); ++i) {
-                double local_grad = (a->data[i] > 0.0) ? 1.0 : 0.0;
-                a->grad->data[i] += result->grad->data[i] * local_grad;
-            }
-        };
-    }
-    return result;
-}
-
 std::shared_ptr<Tensor> Tensor::transpose() const {
     if (this->shape.size() != 2) throw std::invalid_argument("Size must be 2");
 
@@ -208,9 +189,28 @@ std::shared_ptr<Tensor> Tensor::apply(std::function<double(double)> func) const 
     return result;
 }
 
-std::shared_ptr<Tensor> Tensor::relu() const {
-    auto result = std::make_shared<Tensor>(*this);
-    result->apply_([](double val) {return val > 0.0 ? val : 0.0;});
+std::shared_ptr<Tensor> Tensor::leaky_relu() {
+    auto result = std::make_shared<Tensor>(this->shape, 0.0, this->requires_grad);
+
+    for (size_t i = 0; i < data.size(); i++) {
+        result->data[i] = (data[i] > 0.0) ? data[i] : 0.01 * data[i];
+    }
+
+    result->prev = { shared_from_this() };
+
+    if (this->requires_grad) {
+        auto input_ptr = shared_from_this();
+
+        result->_backward = [input_ptr, result]() {
+            for (size_t i = 0; i < input_ptr->data.size(); i++) {
+                if (input_ptr->data[i] > 0.0) {
+                    input_ptr->grad->data[i] += result->grad->data[i];
+                } else {
+                    input_ptr->grad->data[i] += 0.01 * result->grad->data[i];
+                }
+            }
+        };
+    }
     return result;
 }
 
@@ -244,12 +244,6 @@ void Tensor::backward() {
     std::unordered_set<Tensor*> visited;
     build_topo(shared_from_this(), topo, visited);
 
-    for (auto& t : topo) {
-        if (t->grad) {
-            t->zero_grad();
-        }
-    }
-
     if (this->grad) {
         this->grad->fill(1.0);
     }
@@ -266,7 +260,7 @@ std::shared_ptr<Tensor> Tensor::mse_loss(std::shared_ptr<Tensor> pred, std::shar
     double sum_diff = 0.0;
     for (size_t i = 0; i < size; i++) {
         double diff = pred->data[i] - target->data[i];
-        sum_diff = diff * diff;
+        sum_diff += diff * diff;
     }
     double mse = sum_diff / size;
 

@@ -13,5 +13,5 @@ public:
 
     std::shared_ptr<Tensor> forward(std::shared_ptr<Tensor> input);
 
-    std::vector<std::shared_ptr<Tensor>> parameters()
+    std::vector<std::shared_ptr<Tensor>> parameters();
 };

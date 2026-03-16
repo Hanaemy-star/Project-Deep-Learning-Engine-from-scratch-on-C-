@@ -25,8 +25,6 @@ public:
 
     static std::shared_ptr<Tensor> matrixmul(std::shared_ptr<Tensor> a, std::shared_ptr<Tensor> b);
 
-    static std::shared_ptr<Tensor>relu(std::shared_ptr<Tensor> a);
-
     static std::shared_ptr<Tensor> mse_loss(std::shared_ptr<Tensor> pred, std::shared_ptr<Tensor> target);
 
     Tensor(std::vector<size_t> shape, double initial_value = 0.0, bool requires_grad = false);
@@ -55,7 +53,7 @@ public:
 
     std::shared_ptr<Tensor> apply(std::function<double(double)> func) const;
 
-    std::shared_ptr<Tensor> relu() const;
+    std::shared_ptr<Tensor> leaky_relu();
 
     Tensor operator*(const double& scalar) const;
 
